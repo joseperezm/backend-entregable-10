@@ -26,4 +26,5 @@
 - Esta disponible el endpoint tanto en API como en Views.
 
 `/api/mockingproducts`
+
 `/mockingproducts`
