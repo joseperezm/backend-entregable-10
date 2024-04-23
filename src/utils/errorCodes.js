@@ -7,6 +7,10 @@ module.exports = {
         message: "El parámetro proporcionado es inválido.",
         statusCode: 400
     },
+    MISSING_FIELDS: {
+        message: "Hay campos faltantes.",
+        statusCode: 400
+    },
     UNAUTHORIZED: {
         message: "Acceso denegado. No tienes permiso para acceder a este recurso.",
         statusCode: 401

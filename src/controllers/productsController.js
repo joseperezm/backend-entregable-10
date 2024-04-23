@@ -48,11 +48,40 @@ exports.getProductById = async (req, res, next) => {
 
 exports.addProduct = async (req, res, next) => {
     try {
-        const newProduct = req.body;
+        const { title, price, description, code, stock, category } = req.body;
+        const fieldTypes = {
+            title: 'String',
+            price: 'Number',
+            description: 'String',
+            code: 'String',
+            stock: 'Number',
+            category: 'String'
+        };
+
+        const requiredFields = [];
+        const missingFieldDetails = [];
+
+        for (const [field, type] of Object.entries(fieldTypes)) {
+            if (!req.body[field]) {
+                requiredFields.push(field);
+                missingFieldDetails.push(`${field}: ${type}`);
+            }
+        }
+
+        if (requiredFields.length > 0) {
+            console.log("Faltan campos requeridos con sus tipos:", missingFieldDetails.join(", "));
+            throw {
+                code: 'MISSING_FIELDS',
+                message: 'Campos requeridos faltantes: ' + missingFieldDetails.join(", "),
+                fields: requiredFields
+            };
+        }
+
+        const newProduct = { title, price, description, code, stock, category };
         const product = await productService.addProduct(newProduct);
         res.status(201).json({ id: product._id, message: 'Producto agregado correctamente' });
     } catch (error) {
-        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
+        next({ code: error.code || 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 
