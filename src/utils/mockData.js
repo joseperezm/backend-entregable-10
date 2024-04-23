@@ -8,10 +8,14 @@ function generateProducts(numProducts = 100, page = 1, limit = 10) {
     for (let i = startIndex; i < endIndex && i < numProducts; i++) {
         products.push({
             id: faker.datatype.uuid(),
-            name: faker.commerce.productName(),
-            price: faker.commerce.price(),
+            title: faker.commerce.productName(),
             description: faker.commerce.productDescription(),
-            image: "uploads/placeholder.jpg"
+            code: faker.datatype.uuid(),
+            price: parseFloat(faker.commerce.price()),
+            stock: faker.datatype.number({ min: 0, max: 100 }),
+            category: faker.commerce.department(),
+            thumbnails: "uploads/placeholder.jpg",
+            status: faker.datatype.boolean()
         });
     }
     return products;
@@ -22,10 +26,14 @@ function generateProductsApi(numProducts = 100) {
     for (let i = 0; i < numProducts; i++) {
         products.push({
             id: faker.datatype.uuid(),
-            name: faker.commerce.productName(),
-            price: faker.commerce.price(),
+            title: faker.commerce.productName(),
             description: faker.commerce.productDescription(),
-            image: "uploads/placeholder.jpg"
+            code: faker.datatype.uuid(),
+            price: parseFloat(faker.commerce.price()),
+            stock: faker.datatype.number({ min: 0, max: 100 }),
+            category: faker.commerce.department(),
+            thumbnails: "uploads/placeholder.jpg",
+            status: faker.datatype.boolean()
         });
     }
     return products;
