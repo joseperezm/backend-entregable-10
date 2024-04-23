@@ -1,4 +1,5 @@
 const productService = require('../services/productService');
+const { generateProductsApi } = require('../utils/mockData');
 
 exports.getProducts = async (req, res) => {
     const limit = req.query.limit === undefined ? 10 : parseInt(req.query.limit, 10);
@@ -79,4 +80,9 @@ exports.deleteProduct = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+};
+
+exports.mockProducts = (req, res) => {
+    const products = generateProductsApi();
+    res.json(products);
 };

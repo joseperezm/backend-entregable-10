@@ -1,4 +1,5 @@
 const productService = require('../services/productService');
+const { generateProducts } = require('../utils/mockData');
 
 exports.index = async (req, res) => {
     try {
@@ -13,13 +14,11 @@ exports.index = async (req, res) => {
         
         const messages = req.flash();
         
-        // Calculo de controladores de paginación
         const hasPrevPage = page > 1;
         const hasNextPage = page < result.totalPages;
         const prevPage = hasPrevPage ? page - 1 : null;
         const nextPage = hasNextPage ? page + 1 : null;
         
-        // Generar lista de páginas (esto puede ajustarse según tu necesidad exacta)
         const pages = Array.from({ length: result.totalPages }, (_, i) => ({
             number: i + 1,
             isCurrent: (i + 1) === page
@@ -40,4 +39,34 @@ exports.index = async (req, res) => {
         console.error("Error al obtener productos", error);
         res.status(500).render('error', { message: "Error interno del servidor" });
     }
+};
+
+exports.showMockProducts = (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const numProducts = 100
+
+    const products = generateProducts(numProducts, page, limit);
+
+    const totalPages = Math.ceil(numProducts / limit);
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+    const prevPage = hasPrevPage ? page - 1 : null;
+    const nextPage = hasNextPage ? page + 1 : null;
+
+    const pages = Array.from({ length: totalPages }, (_, i) => ({
+        number: i + 1,
+        isCurrent: (i + 1) === page
+    }));
+
+    res.render("mockProducts", {
+        products,
+        page,
+        totalPages,
+        hasPrevPage,
+        hasNextPage,
+        prevPage,
+        nextPage,
+        pages
+    });
 };

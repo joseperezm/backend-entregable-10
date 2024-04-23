@@ -22,6 +22,7 @@ router.get("/register", redirectIfLoggedIn, authViewController.showRegister);
 router.get('/profile', redirectIfNotLoggedIn, authViewController.showProfile);
 router.get("/chat", authorize('user'), redirectIfNotLoggedIn, chatViewController.showChat);
 router.get("/realtimeproducts", authorize('admin'), redirectIfNotLoggedIn, realTimeProductsViewController.showRealTimeProducts);
+router.get("/mockingproducts", redirectIfNotLoggedIn, productsViewController.showMockProducts);
 
 router.get('/error', redirectIfNotLoggedIn, errorController.showError);
 
