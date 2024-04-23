@@ -27,5 +27,5 @@
 
 `/mockingproducts` 100 productos, 10 por pagina.
 
-- Se personaliza la lista de errores mas comunes de una app.
+- Se personaliza la lista de códigos de error mas comunes de una app.
 - Se agrega error y mensaje de consola personalizado para campos faltantes al agregar producto.
