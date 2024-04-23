@@ -1,6 +1,4 @@
-# WIP
-
-## Mocking y Manejo de Errores
+# Mocking y Manejo de Errores
 
 ## Consigna
 
