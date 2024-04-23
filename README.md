@@ -23,7 +23,7 @@
 
 ## Sobre el testing
 
-- Esta disponible el endpoint tanto en API como en Views.
+- Esta disponible el endpoint de Mocking Products tanto en API como en Views.
 
 `/api/mockingproducts`
 
