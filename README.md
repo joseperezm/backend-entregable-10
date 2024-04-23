@@ -25,6 +25,6 @@
 
 - Esta disponible el endpoint de Mocking Products tanto en API como en Views.
 
-`/api/mockingproducts`
+`/api/mockingproducts` 100 productos.
 
-`/mockingproducts`
+`/mockingproducts` 100 productos, 10 por pagina.
