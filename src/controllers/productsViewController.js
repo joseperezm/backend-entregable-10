@@ -37,7 +37,7 @@ exports.index = async (req, res) => {
         });
     } catch (error) {
         console.error("Error al obtener productos", error);
-        res.status(500).render('error', { message: "Error interno del servidor" });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 

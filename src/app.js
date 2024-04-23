@@ -13,6 +13,8 @@ const sessionsRouter = require('./routes/sessions.router.js');
 const initializePassport = require("./config/passport.config.js");
 const config = require('./config/config.js');
 const UserModel = require('./dao/models/user-mongoose.js');
+const errorHandler = require('./middleware/errorHandler.js');
+const errorCodes = require('./utils/errorCodes');
 
 const PORT = config.APP_PORT;
 require("./database.js");
@@ -94,6 +96,15 @@ app.use("/api", cartsRouter);
 app.use("/", viewsRouter);
 
 app.use('/api/sessions', sessionsRouter);
+
+app.use((req, res, next) => {
+    const error = new Error("Not Found");
+    error.code = 'NOT_FOUND';
+    error.status = errorCodes.NOT_FOUND.statusCode;
+    next(error);
+});
+
+app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);

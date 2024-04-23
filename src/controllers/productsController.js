@@ -1,7 +1,8 @@
 const productService = require('../services/productService');
 const { generateProductsApi } = require('../utils/mockData');
+const errorCodes = require('../utils/errorCodes');
 
-exports.getProducts = async (req, res) => {
+exports.getProducts = async (req, res, next) => {
     const limit = req.query.limit === undefined ? 10 : parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page) || 1;
     const sort = req.query.sort;
@@ -28,57 +29,56 @@ exports.getProducts = async (req, res) => {
             nextLink: hasNextPage ? `${baseUrl}page=${nextPage}` : null
         });
     } catch (error) {
-        console.error('Error obteniendo los productos:', error);
-        res.status(500).json({ status: "error", message: error.message });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 
-exports.getProductById = async (req, res) => {
+exports.getProductById = async (req, res, next) => {
     try {
         const product = await productService.getProductById(req.params.pid);
-        if (product) {
-            res.json(product);
+        if (!product) {
+            next({ code: 'NOT_FOUND' });
         } else {
-            res.status(404).json({ message: 'Producto no encontrado o inexistente' });
+            res.json(product);
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 
-exports.addProduct = async (req, res) => {
+exports.addProduct = async (req, res, next) => {
     try {
         const newProduct = req.body;
         const product = await productService.addProduct(newProduct);
         res.status(201).json({ id: product._id, message: 'Producto agregado correctamente' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 
-exports.updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res, next) => {
     try {
         const updatedProduct = await productService.updateProduct(req.params.id, req.body);
         if (updatedProduct) {
             res.json({ message: 'Producto actualizado correctamente', product: updatedProduct });
         } else {
-            res.status(404).json({ message: 'Producto no encontrado o inexistente' });
+            next({ code: 'NOT_FOUND' });
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 
-exports.deleteProduct = async (req, res) => {
+exports.deleteProduct = async (req, res, next) => {
     try {
         const success = await productService.deleteProduct(req.params.pid);
         if (success) {
             res.status(200).json({ message: 'Producto eliminado correctamente' });
         } else {
-            res.status(404).json({ message: 'El producto que desea eliminar no existe' });
+            next({ code: 'NOT_FOUND' });
         }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next({ code: 'INTERNAL_SERVER_ERROR', original: error });
     }
 };
 

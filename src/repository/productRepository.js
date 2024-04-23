@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { CastError } = require('mongoose').Error;
 const Product = require('../dao/models/products-mongoose');
+const errorCodes = require('../utils/errorCodes');
 
 Product.schema.plugin(mongoosePaginate);
 
 class ProductRepository {
-    constructor() {}
+    constructor() { }
 
     async addProduct(productData) {
         try {
@@ -15,7 +16,7 @@ class ProductRepository {
             return product;
         } catch (error) {
             console.error('Error adding product:', error);
-            throw error;
+            throw { code: 'INTERNAL_SERVER_ERROR', original: error };
         }
     }
 
@@ -24,9 +25,9 @@ class ProductRepository {
             if (!opts) {
                 return await Product.find({});
             }
-    
+
             const { limit, page = 1, sort = '', query = '' } = opts;
-    
+
             let queryFilter = {};
             if (query) {
                 if (query.startsWith("categoria:") || query.startsWith("disponible:")) {
@@ -43,12 +44,12 @@ class ProductRepository {
                     ];
                 }
             }
-    
+
             let sortOptions = {};
             if (sort === 'asc' || sort === 'desc') {
                 sortOptions.price = sort === 'asc' ? 1 : -1;
             }
-    
+
             if (limit === undefined || limit === 0) {
                 const docs = await Product.find(queryFilter).sort(sortOptions);
                 return {
@@ -79,7 +80,7 @@ class ProductRepository {
             }
         } catch (error) {
             console.error('Error obteniendo los productos:', error);
-            throw error;
+            throw { code: 'INTERNAL_SERVER_ERROR', original: error };
         }
     }
 
@@ -87,12 +88,12 @@ class ProductRepository {
         try {
             return await Product.findById(productId);
         } catch (error) {
-            if (error instanceof CastError && error.path === '_id') {
+            if (error instanceof mongoose.Error.CastError && error.path === '_id') {
                 console.error('Incorrect product ID:', error);
-                return null;
+                throw { code: 'INVALID_PARAM', original: error };
             } else {
                 console.error('Error getting product by ID:', error);
-                throw error;
+                throw { code: 'INTERNAL_SERVER_ERROR', original: error };
             }
         }
     }
@@ -101,12 +102,12 @@ class ProductRepository {
         try {
             return await Product.findByIdAndUpdate(productId, productData, { new: true });
         } catch (error) {
-            if (error instanceof CastError && error.path === '_id') {
+            if (error instanceof mongoose.Error.CastError && error.path === '_id') {
                 console.error('Incorrect product ID:', error);
-                return null;
+                throw { code: 'INVALID_PARAM', original: error };
             } else {
                 console.error('Error updating product:', error);
-                throw error;
+                throw { code: 'INTERNAL_SERVER_ERROR', original: error };
             }
         }
     }
@@ -115,12 +116,12 @@ class ProductRepository {
         try {
             return await Product.findByIdAndDelete(productId);
         } catch (error) {
-            if (error instanceof CastError && error.path === '_id') {
+            if (error instanceof mongoose.Error.CastError && error.path === '_id') {
                 console.error('Incorrect product ID:', error);
-                return null;
+                throw { code: 'INVALID_PARAM', original: error };
             } else {
                 console.error('Error deleting product:', error);
-                throw error;
+                throw { code: 'INTERNAL_SERVER_ERROR', original: error };
             }
         }
     }

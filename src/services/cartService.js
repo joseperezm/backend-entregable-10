@@ -1,5 +1,6 @@
 const CartRepository = require("../repository/cartRepository");
 const cartRepository = new CartRepository();
+const errorCodes = require('../utils/errorCodes');
 
 exports.createCart = async () => {
     return await cartRepository.createCart();
@@ -43,6 +44,6 @@ exports.finalizePurchase = async (cartId, userEmail) => {
         return result;
     } catch (error) {
         console.error('Error al finalizar la compra:', error);
-        throw new Error('Error al finalizar la compra: ' + error.message);
+        throw { code: 'INTERNAL_SERVER_ERROR', original: error };
     }
 };
